@@ -1,0 +1,107 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="/javascripts/emojionearea.js"></script>
+    <link href="/stylesheets/emojionearea.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/emojionearea.min.css">
+    <script type="text/javascript" src="/javascripts/emojionearea.min.js"></script>
+    <style>
+        .row{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <script>
+
+        $(document).ready(function() {
+
+            $("#emojionearea5").emojioneArea({
+                pickerPosition: "top",
+                filtersPosition: "bottom",
+                tones: false,
+                autocomplete: false,
+                inline: true,
+                hidePickerOnBlur: false
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div class="row" style="height: 30px;border-bottom: solid 1px; text-align: center;margin-bottom: 5px;margin-top: 5px ">
+        <div>
+            <a style="margin-right: 20px" href="/timban">Tìm bạn</a>
+            <a style="margin-right: 20px" href="/canhan">Cá nhân</a>
+            <a  style="margin-right: 20px" href="/trangchu">Trang chủ</a>
+            <a  style="margin-right: 20px" href="/trochuyen">Trò chuyện</a>
+            <a style="margin-right: 20px"  href="/dangxuat">Đăng xuất</a>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-lg-3 col-xs-0" >
+
+        </div>
+        <div id="timeline-wrapper" class="col-md-6  col-lg-6 col-xs-12 mes-wrapper" style="height: auto;padding: 10px 100px 10px 100px">
+            <div  class=" post-wrapper" style="width: 500px;height: auto;border:solid 1px;margin-bottom: 20px">
+                <div class="row owner-post" style="padding: 10px">
+                    <div class="owneravatar-post" style="width: 30px;height: 30px;background-color: #00B7FF;border-radius: 50%;float: left;margin-right: 10px">
+
+                    </div>
+                    <div class="ownername-post" style="line-height: 27px;font-size: 18px">
+                        Tien Nguyen
+                    </div>
+                </div>
+                <div class="row content-post">
+                    <div class="row" style="padding: 0px 10px 10px 10px">
+                        This is my fisrt post!
+                    </div>
+                    <div class="row">
+                        <img src="/images/ny.jpg" style="width: 100%;height: 375px"/>
+                    </div>
+                </div>
+                <div class="row comment-post" style="padding: 10px">
+
+                    <div class="span6">
+                        <textarea id="emojionearea5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div  class=" post-wrapper" style="width: 500px;height: 500px;border:solid 1px;margin-bottom: 20px">
+                <div class="row owner-post" style="padding: 10px">
+                    <div class="owneravatar-post" style="width: 30px;height: 30px;background-color: #00B7FF;border-radius: 50%;float: left;margin-right: 10px">
+
+                    </div>
+                    <div class="ownername-post" style="line-height: 27px;font-size: 18px">
+                        Tien Nguyen
+                    </div>
+                </div>
+                <div class="row content-post">
+                    <div class="row" style="padding: 0px 10px 10px 10px">
+                        This is my second post!
+                    </div>
+                    <div class="row">
+                        <img src="/images/ny.jpg" style="width: 100%;height: 375px"/>
+                    </div>
+                </div>
+                <div class="row comment-post" style="padding: 10px">
+                    <input type="text" style="width: 80%"/>
+
+                </div>
+            </div>
+            <div class="row" >
+
+            </div>
+
+        </div>
+        <div class="col-md-3  col-lg-3 col-xs-0">
+
+        </div>
+    </div>
+
+
+
+</body>
+</html>

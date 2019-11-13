@@ -1,0 +1,107 @@
+<html>
+<head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="/javascripts/emojionearea.js"></script>
+    <link href="/stylesheets/emojionearea.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="/javascripts/trochuyen.js"></script>
+    <link rel="stylesheet" href="/stylesheets/emojionearea.min.css">
+    <script type="text/javascript" src="/javascripts/emojionearea.min.js"></script>
+    
+  
+
+
+    <script>
+
+        $(document).ready(function() {
+            
+            var io = io('http://localhost:3000/');
+
+
+        });
+
+
+
+    </script>
+    <style>
+        .friend-item:hover{
+            background-color:rgb(235, 235, 235);
+        }
+        .selected-friend-item{
+            background-color: #dcdcdc;
+        }
+        .loader {
+            border: 3px solid #f3f3f3; /* Light grey */
+            border-top: 3px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .row{
+            padding: 0;
+            margin: 0;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+
+<div class="row" style="height: 30px;border-bottom: solid 1px;text-align: center;margin-bottom: 5px;margin-top: 5px ">
+    <div>
+        <a style="margin-right: 20px" href="/timban">Tìm bạn</a>
+        <a style="margin-right: 20px" href="/canhan">Cá nhân</a>
+        <a  style="margin-right: 20px" href="/trangchu">Trang chủ</a>
+        <a  style="margin-right: 20px" href="/trochuyen">Trò chuyện</a>
+        <a style="margin-right: 20px"  href="/dangxuat">Đăng xuất</a>
+       
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3 col-lg-3 col-xs-0" >
+        <input id="user_id" type="hidden" value='<%= user_id %>'/>
+    </div>
+    <div id="chat-wrapper" class="col-md-6  col-lg-6 col-xs-12 mes-wrapper" style="height: 90%;background-color: #f5f6f7">
+        
+        <div id="conversation-wrapper"  class="row" style="height: 92%;overflow-y: auto">
+            
+        </div>
+        <div class="row" style="height: 10%">
+
+            <div class="row">
+                <div class="span6">
+                    <textarea class="mes" id="emojionearea5"></textarea>                
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3  col-lg-3 col-xs-0">
+           
+        <div class="" style="float: right;width: 80%;height: 60%;border-left: black">
+            <% listFriend.forEach(function(i){ %>
+                
+                <div class="row friend-item" data-id="<%= i['user_id'] %>" style="margin-bottom: 5px;cursor: pointer;">
+                    <img src="<%= i['avatar'] %>" style="width: 40px; height: 40px;margin-right: 10px"/>  <%= i['ten']%>
+                </div>
+            <%}) %>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

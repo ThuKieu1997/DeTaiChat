@@ -1,0 +1,203 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="/javascripts/emojionearea.js"></script>
+    <link href="/stylesheets/emojionearea.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/emojionearea.min.css">
+    <script type="text/javascript" src="/javascripts/emojionearea.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .row{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+
+            $(".emojionearea5").emojioneArea({
+                pickerPosition: "top",
+                filtersPosition: "bottom",
+                tones: false,
+                autocomplete: false,
+                inline: true,
+                hidePickerOnBlur: false
+            });
+       
+            var content= $("#emojionearea1").emojioneArea({
+                placeholder: "Bạn muốn nói điều gì...",
+                pickerPosition: "bottom",
+                tonesStyle: "bullet",
+                events: {
+                    keyup: function (editor, event) {
+                        console.log(editor.html());
+                        console.log(this.getText());
+                    }
+                }
+            });
+            // $("#frmPost").on("submit",function(event){
+            //     //event.preventDefault();
+            //     var fileInput = $("#fileHinh").val();
+               
+            //     var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+            //     if($("#fileHinh").get(0).files.length === 0){
+                 
+            //     }else{
+            //         if(!allowedExtensions.exec(fileInput)){
+            //             alert('Bạn chỉ có thể tải lên hình ảnh!');
+            //             return false;
+            //         }else{
+            //             var formData = new FormData($('#frmPost')[0]);
+                    
+            //             $.ajax({
+            //                 type:"POST",
+            //                 url:"/newpost",
+            //                 data:formData,
+            //                 contentType: false,
+            //                 processData: false,
+            //                 success:function(){
+            //                     alert("ok")
+            //                 },
+            //                 error:function(err){
+            //                     alert(err.responseText)
+            //                 }
+            //             })
+            //         }
+            //     }
+                
+            // })  
+
+
+        });
+        
+    </script>
+    
+    
+
+</head>
+<body>
+    <div class="row" style="height: 30px;border-bottom: solid 1px; text-align: center;margin-bottom: 5px;margin-top: 5px ">
+        <div>
+            <a style="margin-right: 20px" href="/timban">Tìm bạn</a>
+            <a style="margin-right: 20px" href="/canhan">Cá nhân</a>
+            <a  style="margin-right: 20px" href="/trangchu">Trang chủ</a>
+            <a  style="margin-right: 20px" href="/trochuyen">Trò chuyện</a>
+            <a style="margin-right: 20px"  href="/dangxuat">Đăng xuất</a>
+           
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4 col-xs-0" style=padding:10px >
+        
+            <div class="row">Lời đề nghị kết bạn</div>
+            <div class="row">
+                <% listAddFriend.forEach(element => {%>
+                    <div class="request row">
+                            <a href="/u/<%= element['user_id'] %>">
+                                <div class=''>
+                                    <img style='width:50px;height:50px;float:left;margin-right:10px' src='<%= element["avatar"] %>'/>
+                                    <h3 style='float:left;margin-top: 10px'><%= element["ten"] %></h3>
+                                   
+                                </div>
+                            </a>
+                            <button class="btn-chap-nhan" style="float:right;margin-top: 10px" data-requester="<%= element['user_id'] %>">Chấp nhận</button>
+                            <button class="btn-tu-choi" style="float:right;margin-top: 10px" data-requester="<%= element['user_id'] %>">Từ chối</button>
+                    </div>
+                <%});  %>
+                <script>
+                    $(document).ready(function(){
+                        $(".btn-tu-choi").on("click",function(){
+                           
+                            var requester = $(this).attr("data-requester");
+                            $.ajax({
+                                url:"/tuchoiketban",
+                                type:"POST",
+                                data:{"requester": requester},
+                                success:function(data){
+
+                                },
+                                error:function(err){
+
+                                }
+                            })
+                            $(this).parent().remove();
+                        })
+                        $(".btn-chap-nhan").on("click",function(){
+                            var requester = $(this).attr("data-requester");
+                            $.ajax({
+                                url:"/chapnhanketban",
+                                type:"POST",
+                                data:{"requester": requester},
+                                success:function(data){
+                                    
+                                },
+                                error:function(err){
+
+                                }
+                            })
+                            $(this).parent().remove(); 
+                        })
+                    })
+                </script>
+            </div>
+			
+        </div>
+        <div  class="col-md-4  col-lg-5 col-xs-12 mes-wrapper" style='height: auto;'>
+            <div class="row">
+                
+                    <input id="txt-tim-kiem" type="text" style="width: 70%" placeholder="Tìm kiếm bạn bè" ><input type="submit" value="Tìm"/>
+                    
+                    <script>
+                        $(document).ready(function(){
+                            $("#txt-tim-kiem").on("keyup", function(event){
+                                
+
+                                if(event.keyCode == 13){
+                                    var sdt = $(this).val();
+                                    $.ajax({
+                                        url:"/timkiemuser",
+                                        data:{"sdt":sdt},
+                                        type:"POST",
+                                        beforeSend: function(){
+                                            $(".ket-qua-ban-be").html("Đang tìm kiếm kết quả...");
+                                        },
+                                        success: function(data){
+                                            $(".ket-qua-ban-be").html(data);
+
+                                        },
+                                        error: function(err){
+                                            alert(err.responseText)
+                                        }
+                                    });
+                                  
+                                }
+                            })
+                        });
+                    </script>
+            </div>
+            <div class="row ket-qua-ban-be" style="padding-top: 20px">
+
+            </div>
+
+
+        </div>
+        <div class="col-md-3  col-lg-3 col-xs-0">
+			<div class="" style="float: right;width: 80%;height: 60%;border-left: black">
+                <% listFriend.forEach(function(i){ %>
+
+                    <div class="row friend-item" data-id="<%= i['user_id'] %>" style="margin-bottom: 5px;cursor: pointer;">
+                        <img src="<%= i['avatar'] %>" style="width: 40px; height: 40px;margin-right: 10px"/>  <%= i['ten']%>
+                    </div>
+                <%}) %>
+                
+            </div>
+            
+        </div>
+    </div>
+
+
+
+</body>
+</html>

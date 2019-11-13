@@ -1,0 +1,179 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="/javascripts/emojionearea.js"></script>
+    <link href="/stylesheets/emojionearea.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/emojionearea.min.css">
+    <script type="text/javascript" src="/javascripts/emojionearea.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .row{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+
+            $(".emojionearea5").emojioneArea({
+                pickerPosition: "top",
+                filtersPosition: "bottom",
+                tones: false,
+                autocomplete: false,
+                inline: true,
+                hidePickerOnBlur: false
+            });
+       
+            var content= $("#emojionearea1").emojioneArea({
+                placeholder: "Bạn muốn nói điều gì...",
+                pickerPosition: "bottom",
+                tonesStyle: "bullet",
+                events: {
+                    keyup: function (editor, event) {
+                        console.log(editor.html());
+                        console.log(this.getText());
+                    }
+                }
+            });
+            // $("#frmPost").on("submit",function(event){
+            //     //event.preventDefault();
+            //     var fileInput = $("#fileHinh").val();
+               
+            //     var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+            //     if($("#fileHinh").get(0).files.length === 0){
+                 
+            //     }else{
+            //         if(!allowedExtensions.exec(fileInput)){
+            //             alert('Bạn chỉ có thể tải lên hình ảnh!');
+            //             return false;
+            //         }else{
+            //             var formData = new FormData($('#frmPost')[0]);
+                    
+            //             $.ajax({
+            //                 type:"POST",
+            //                 url:"/newpost",
+            //                 data:formData,
+            //                 contentType: false,
+            //                 processData: false,
+            //                 success:function(){
+            //                     alert("ok")
+            //                 },
+            //                 error:function(err){
+            //                     alert(err.responseText)
+            //                 }
+            //             })
+            //         }
+            //     }
+                
+            // })  
+
+
+        });
+        
+    </script>
+    
+    
+
+</head>
+<body>
+    <div class="row" style="height: 30px;border-bottom: solid 1px; text-align: center;margin-bottom: 5px;margin-top: 5px ">
+        <div>
+            <a style="margin-right: 20px" href="/timban">Tìm bạn</a>
+            <a style="margin-right: 20px" href="/canhan">Cá nhân</a>
+            <a  style="margin-right: 20px" href="/trangchu">Trang chủ</a>
+            <a  style="margin-right: 20px" href="/trochuyen">Trò chuyện</a>
+            <a style="margin-right: 20px"  href="/dangxuat">Đăng xuất</a>
+        
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4 col-xs-0" style=padding:10px >
+			<div class="row">
+				<img style="width:100px;height:100px;float:left;margin-right:10px" src=" <%= personal['avatar'] %>"/>
+				<h2 style="float:left"><%= personal['ten'] %> </h2>
+            </div>
+            <div class="row" style="padding-top: 10px" data-friend="<%= isFriend %>">
+                    <% if (isFriend == 1) { %>
+                        <button class="btn btn-defalt btn-ket-ban" data-id="<%= personal['user_id']%>" >Gửi lời kết bạn</button>
+                        <% }%>
+                    <% if (isFriend == 2) { %>
+                        <button class="btn btn-defalt btn-be-ban" data-id="<%= personal['user_id']%>" >Đã gửi lời kết bạn</button>
+                        <% }%>  
+                    <% if (isFriend == 3) { %>
+                        <button class="btn btn-defalt btn-ket-ban" data-id="<%= personal['user_id']%>" >Đã trở thành bạn bè</button>
+                        <% }%>
+                    </div>
+            <script>
+                $(document).ready(function(){
+                    $(".btn-ket-ban").on("click",function(){
+                        var user_id = $(this).attr("data-id");
+                        
+                        $.ajax({
+                            url:"/ketban",
+                            data: {"user_id": user_id},
+                            type:"POST",
+                            success: function(data){
+                                $(".btn-ket-ban").text("Đã gửi lời kết bạn")
+                                console.log(data);
+                            },
+                            error:function(err){
+                                console.log(err.responseText)
+                            }
+                        });
+                    })
+                });
+               
+            </script>
+			
+        </div>
+        <div id="timeline-wrapper" class="col-md-5  col-lg-5 col-xs-12 mes-wrapper" style="height: auto">
+            <% timeLine.sort(function(a, b){
+    
+                return -(new Date(a['postat']) - new Date(b['postat'])); }
+                ); %>
+            <% timeLine.forEach(function(i){ %>
+                <div  class=" post-wrapper" style="width: 500px;height: auto;border:solid 1px;margin-bottom: 20px">
+                    <div class="row owner-post" style="padding: 10px">
+                        <div class="owneravatar-post" style="width: 30px;height: 30px;background-color: #00B7FF;border-radius: 50%;float: left;margin-right: 10px">
+                                <img src="<%= personal['avatar'] %>" style="width: 100%;height: 100%;border-radius: 50%"/>
+                        </div>
+                        <div class="ownername-post" style="line-height: 27px;font-size: 18px">
+                            <%= personal['ten'] %>
+                            <br/>
+                            <span style="font-size:12px">Lúc  <%= new Date(i['postat']).toLocaleString()  %></span>
+                        </div>
+                    </div>
+                    <div class="row content-post">
+                        <div class="row" style="padding: 0px 10px 10px 10px">
+                            <%= i['title']%>
+                        </div>
+                        <div class="row">
+                            <img src=" <%= i['image'] %>" style="width: 100%;height: 375px"/>
+                        </div>
+                    </div>
+                    <div class="row comment-post" style="padding: 10px">
+
+                        <div class="span6">
+                            <textarea id="emojionearea5" class="emojionearea5"></textarea>
+                        </div>
+                    </div>
+                </div>
+            <%}) %>
+            
+            <div class="row" >
+
+            </div>
+
+        </div>
+        <div class="col-md-3  col-lg-3 col-xs-0">
+			
+            
+        </div>
+    </div>
+
+
+
+</body>
+</html>

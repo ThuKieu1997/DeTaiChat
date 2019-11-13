@@ -1,0 +1,421 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="/javascripts/emojionearea.js"></script>
+    <link href="/stylesheets/emojionearea.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/emojionearea.min.css">
+    <script type="text/javascript" src="/javascripts/emojionearea.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+
+
+    <style>
+        .row{
+            padding: 0;
+            margin: 0;
+        }
+        .image-upload > input {
+            visibility:hidden;
+            width:0;
+            height:0
+        }
+        .loader {
+            border: 2px solid #f3f3f3; /* Light grey */
+            border-top: 2px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+
+            $(".emojionearea5").emojioneArea({
+                pickerPosition: "top",
+                filtersPosition: "bottom",
+                tones: false,
+                autocomplete: false,
+                inline: true,
+                hidePickerOnBlur: false
+            });
+       
+            var content= $("#emojionearea1").emojioneArea({
+                placeholder: "Bạn muốn nói điều gì...",
+                pickerPosition: "bottom",
+                tonesStyle: "bullet",
+                events: {
+                    keyup: function (editor, event) {
+                        console.log(editor.html());
+                        console.log(this.getText());
+                    }
+                }
+            });
+            
+
+
+        });
+        
+    </script>
+    
+    
+
+</head>
+<body>
+    <div class="row" style="height: 30px;border-bottom: solid 1px; text-align: center;margin-bottom: 5px;margin-top: 5px ">
+        <div>
+            <a style="margin-right: 20px" href="/timban">Tìm bạn</a>
+            <a style="margin-right: 20px" href="/canhan">Cá nhân</a>
+            <a  style="margin-right: 20px" href="/trangchu">Trang chủ</a>
+            <a  style="margin-right: 20px" href="/trochuyen">Trò chuyện</a>
+            <a style="margin-right: 20px"  href="/dangxuat">Đăng xuất</a>
+           
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4 col-xs-0" style=padding:10px >
+			<div class="row">
+               <!-- <img style="width:100px;height:100px;float:left;margin-right:10px" src=" <%= personal['avatar'] %>"/> -->
+                <div style="width: 100px;height: 100px;" class="image-upload">
+                    <label for="file-input">
+                      <img style="width: 100%;height: 100%;" src=" <%= personal['avatar'] %>" style="pointer-events: none"/>
+                    </label>
+                    <form style="display: none" id="frm-avt" name="frm-avt" action="/capnhatanhdaidien" method="POST" enctype="multipart/form-data">
+                        <input id="file-input" name="file-input" type="file" />
+                    </form>
+                   
+                  </div>
+                  <script>
+                      $(document).ready(function(){
+                          $("#file-input").on("change", function(){
+                              
+                                if($(this).val() != ""){
+                                    $("#frm-avt").submit();
+                                
+                                }
+                          })
+                      });
+                  </script>
+
+				<h2 class="h2-ten" style="float:left"><%= personal['ten'] %> </h2>
+			</div>
+			<div class="row">
+                <script>
+                    $(document).on("click",".btn-edit-infor",function(){
+               
+                       
+                            var value =$(this).prev().text()
+                            $(this).prev().html("<input class= 'form-control' autofocus value='" + value + "' />")
+                            $(this).html('<i class="fa fa-save" style="font-size:24px;cursor:pointer"></i>')
+                            
+                            $(this).removeClass('btn-edit-infor').addClass("btn-save-infor")
+                        
+                  
+                    })
+                    $(document).on("click",".btn-save-infor",function(){
+                        
+
+                        function kiemTraSDT(sdt){
+                            var patt = /(09|03|07)+([0-9]{8})\b/g;
+                            return patt.test(sdt);
+                        }
+                        function kiemTraEmail(email){
+                            var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                            return re.test(email);
+                        }
+                        function kiemTraNgaySinh(ngaysinh){
+                            var re = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/g;
+                            return re.test(ngaysinh);
+                        }
+                        
+                      
+                        var attr = $(this).prev().attr("data-marker");
+                        var btn_this =  $(this);
+                        
+                        switch (attr) {
+                            case "ten":
+                                var value =$(this).prev().find("input").val().trim();
+                                if(value != ""){
+                                    $.ajax({
+                                        type:"POST",
+                                        url:"/capnhatthongtin",
+                                        data:{"attr": "ten","value": value},
+                                        beforeSend: function(){
+                                            btn_this.html('<div class="loader"></div>');
+                                        },
+                                        success: function(){
+                                         
+                                            btn_this.prev().html(value);
+                                            btn_this.html('<i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i>')
+                                            
+                                            $(".ten-nguoi-dang").text(value);
+                                            $(".h2-ten").text(value);
+                                            btn_this.removeClass('btn-save-infor').addClass("btn-edit-infor")
+                                        },
+                                        error: function(){
+                                            alert("error")
+                                        }
+
+                                    })
+                                }else{
+                                    alert("Không được để trống tên");
+                                }
+                                break;
+                            case "ngaysinh":
+                                var value =$(this).prev().find("input").val().trim();
+                                var res = kiemTraNgaySinh(value);
+                                if(res == true){
+                                    $.ajax({
+                                        type:"POST",
+                                        url:"/capnhatthongtin",
+                                        data:{"attr": "ngaysinh","value": value},
+                                        beforeSend: function(){
+                                            btn_this.html('<div class="loader"></div>');
+                                        },
+                                        success: function(){
+                                         
+                                            btn_this.prev().html(value);
+                                            btn_this.html('<i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i>')
+                                            btn_this.removeClass('btn-save-infor').addClass("btn-edit-infor")
+                                        },
+                                        error: function(){
+                                            alert("error")
+                                        }
+
+                                    })
+                                }else{
+                                    alert("Ngày sinh theo mẫu dd/mm/yyyy, dd-mm-yyyy hoặc dd.mm.yyyy ")
+                                }
+                                break;
+                            case "sdt":
+                                var value =$(this).prev().find("input").val().trim();
+                                var res = kiemTraSDT(value);
+                                if(res == true){
+                                    $.ajax({
+                                        type:"POST",
+                                        url:"/capnhatthongtin",
+                                        data:{"attr": "sdt","value": value},
+                                        beforeSend: function(){
+                                            btn_this.html('<div class="loader"></div>');
+                                        },
+                                        success: function(){
+                                         
+                                            btn_this.prev().html(value);
+                                            btn_this.html('<i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i>')
+                                            btn_this.removeClass('btn-save-infor').addClass("btn-edit-infor")
+                                        },
+                                        error: function(){
+                                            alert("error")
+                                        }
+
+                                    })
+                                }else{
+                                    alert("Số điện thoại không hợp lệ")
+                                }
+                                break;
+                            case "email":
+                                var value =$(this).prev().find("input").val().trim();
+                                var res = kiemTraEmail(value);
+                                if(res == true){
+                                    $.ajax({
+                                        type:"POST",
+                                        url:"/capnhatthongtin",
+                                        data:{"attr": "email","value": value},
+                                        beforeSend: function(){
+                                            btn_this.html('<div class="loader"></div>');
+                                        },
+                                        success: function(){
+                                         
+                                            btn_this.prev().html(value);
+                                            btn_this.html('<i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i>')
+                                            btn_this.removeClass('btn-save-infor').addClass("btn-edit-infor")
+                                        },
+                                        error: function(){
+                                            alert("error")
+                                        }
+
+                                    })
+                                }else{
+                                    alert("Email không hợp lệ")
+                                }
+                                break;
+                            case "diachi":
+                                var value =$(this).prev().find("input").val().trim();
+                                $.ajax({
+                                    type:"POST",
+                                    url:"/capnhatthongtin",
+                                    data:{"attr": "diachi","value": value},
+                                    beforeSend: function(){
+                                        btn_this.html('<div class="loader"></div>');
+                                    },
+                                    success: function(){
+                                        
+                                        btn_this.prev().html(value);
+                                        btn_this.html('<i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i>')
+                                        
+                                        $(".ten-nguoi-dang").text(value);
+                                        $(".h2-ten").text(value);
+                                        btn_this.removeClass('btn-save-infor').addClass("btn-edit-infor")
+                                    },
+                                    error: function(){
+                                        alert("error")
+                                    }
+
+                                })
+                                break;
+                            
+                        
+                        }
+            
+                    })
+                    $(document).on("click",".btn-edit-infor-pwd",function(){
+                        
+
+                           var value =$(this).prev().text()
+                           $(this).prev().html("<input type='password' class= 'form-control' autofocus />")
+                           $(this).html('<i class="fa fa-save" style="font-size:24px;cursor:pointer"></i>')
+                           $(this).removeClass('btn-edit-infor-pwd').addClass('btn-save-infor-pwd')
+                        
+               
+                    });
+                    
+                    $(document).on("click",".btn-save-infor-pwd",function(){
+
+                        var btn_this =  $(this);
+                        var value =$(this).prev().find("input").val().trim();
+                    
+                        if(value != ""){
+                            $.ajax({
+                                type:"POST",
+                                url:"/capnhatthongtin",
+                                data:{"attr": "matkhau","value": value},
+                                beforeSend: function(){
+                                    btn_this.html('<div class="loader"></div>');
+                                },
+                                success: function(){
+                                    
+                                    btn_this.prev().html("••••••");
+                                    btn_this.html('<i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i>')
+                                    btn_this.removeClass('btn-save-infor-pwd').addClass("btn-edit-infor-pwd")
+                                },
+                                error: function(){
+                                    alert("error")
+                                }
+
+                            })
+                        }else{
+                            alert("Mật khẩu không được rỗng")
+                        }
+                        
+            
+                    })
+                </script>
+				<table class="table table-hover">
+					<tbody>
+						<tr>
+							<td>Tên</td>
+							<td data-marker="ten"  class="area-editor-infor"> <%= personal['ten'] %></td>
+							<td class="btn-edit-infor"><i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i></td>
+							
+						</tr>
+						<tr>
+							<td>Ngày sinh</td>
+							<td data-marker="ngaysinh"  class="area-editor-infor"> <%= personal['ngaysinh'] %></td>
+							<td class="btn-edit-infor"><i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i></td>
+						</tr>
+						<tr>
+							<td>Số điện thoại</td>
+							<td data-marker="sdt"  class="area-editor-infor"> <%= personal['sdt'] %></td>
+							<td class="btn-edit-infor"><i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i></td>
+						</tr>
+						<tr>
+							<td>Email</td>
+							<td data-marker="email"  class="area-editor-infor"> <%= personal['email'] %></td>
+							<td class="btn-edit-infor"><i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i></td>
+						</tr>
+						<tr>
+							<td>Địa chỉ</td>
+							<td data-marker="diachi"  class="area-editor-infor"> <%= personal['diachi'] %></td>
+							<td class="btn-edit-infor"><i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i></td>
+						</tr>
+						<tr>
+							<td>Mật khẩu</td>
+							<td data-marker="matkhau"  class="area-editor-infor">•••••• </td>
+							<td class="btn-edit-infor-pwd"><i class="fa fa-pencil" style="font-size:24px;cursor:pointer"></i></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+        </div>
+        <div id="timeline-wrapper" class="col-md-5  col-lg-5 col-xs-12 mes-wrapper" style="height: auto">
+            <% timeLine.sort(function(a, b){
+    
+                return -(new Date(a['postat']) - new Date(b['postat'])); }
+                ); %>
+            <% timeLine.forEach(function(i){ %>
+                <div  class=" post-wrapper" style="width: 500px;height: auto;border:solid 1px;margin-bottom: 20px">
+                    <div class="row owner-post" style="padding: 10px">
+                        <div class="owneravatar-post" style="width: 30px;height: 30px;background-color: #00B7FF;border-radius: 50%;float: left;margin-right: 10px">
+                            <img src="<%= personal['avatar'] %>" style="width: 100%;height: 100%;border-radius: 50%"/>
+                        </div>
+                        <div class="ownername-post" style="line-height: 27px;font-size: 18px">
+                            <span class="ten-nguoi-dang"><%= personal['ten'] %></span>
+                            <br/>
+                            <span style="font-size:12px">Lúc  <%= new Date(i['postat']).toLocaleString()  %></span>
+                        </div>
+                    </div>
+                    <div class="row content-post">
+                        <div class="row" style="padding: 0px 10px 10px 10px">
+                            <%= i['title']%>
+                        </div>
+                        <div class="row">
+                            <img src=" <%= i['image'] %>" style="width: 100%;height: 375px"/>
+                        </div>
+                    </div>
+                    <div class="row comment-post" style="padding: 10px">
+
+                        <div class="span6">
+                            <textarea id="emojionearea5" class="emojionearea5"></textarea>
+                        </div>
+                    </div>
+                </div>
+            <%}) %>
+            
+            <div class="row" >
+
+            </div>
+
+        </div>
+        <div class="col-md-3  col-lg-3 col-xs-0">
+			<form id="frmPost" method="POST" action="/newpost" enctype="multipart/form-data">
+                <textarea id="emojionearea1" name="emojionearea1"></textarea>
+                <!-- <input type="text" id="content" name="content"/> -->
+                <div class="row" style="padding:10px 0 10px 0">
+                    <input id="fileHinh" name="fileHinh" type="file" style="margin-bottom:10px" value="Chon hinh"/>
+                    <input id="btnDang" type="submit" value="Đăng"/>
+                </div>
+            
+            </form>
+            
+            <script>
+                $(document).ready(function(){
+                    
+                    
+                })
+            </script>
+            
+        </div>
+    </div>
+
+
+
+</body>
+</html>

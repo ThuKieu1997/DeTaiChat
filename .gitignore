@@ -1,0 +1,9 @@
+# Webstom
+node_modules
+package-lock.json
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store

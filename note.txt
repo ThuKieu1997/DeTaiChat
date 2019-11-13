@@ -1,0 +1,33 @@
+req.session.userSession =
+
+{
+    "sdt": "0344965583",
+    "avatar": "https://tuankieu.s3.us-east-2.amazonaws.com/1024px-User_icon_2.svg.png",
+    "user_id": "01012018000000",
+    "matkhau": "1",
+    "ketban": {
+      "wrapperName": "Set",
+      "values": [
+        "01012018000006",
+        "01012018000009"
+      ],
+      "type": "String"
+    },
+    "banbe": [
+      "01012018000005",
+      "01012018000006"
+    ],
+    "diachi": "ha noi",
+    "ketbans": [
+      "01012018000007",
+      "01012018000009",
+      "01012018000006",
+      "01012018000005"
+    ],
+    "email": "vana@gmail.com",
+    "ngaysinh": "2/3/1987",
+    "taikhoan": "vana",
+    "ten": "nguyen van a"
+  }
+
+data_access.function = data chua loc Items
